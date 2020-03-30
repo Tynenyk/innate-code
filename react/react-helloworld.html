@@ -54,7 +54,8 @@
 			<div class="col-lg-12">
 				<ul class="breadcrumb">
 					<li><a href="../index.html"><i class="fa fa-home"></i></a><i class="icon-angle-right"></i></li>
-					<li class="active"><a href="../allcourses.html">Все курсы</a> / React<a href="../react/react-1.html"> Введение</a></li>
+					<li class="active"><a href="../allcourses.html">Все курсы</a> / React<a href="../react/react.html"> Введение</a></li>
+					<li class="active"><a href="../allcourses.html">Все курсы</a> / React<a href="../react/react.html"> Введение</a> / <a href="../react/react-helloworld.html">1. Hello World</a></li>
 				</ul>
 			</div>
 		</div>
@@ -84,40 +85,40 @@
 						<h3>Привет, мир React</h3>
 						</p>
 						<p class="black">Начнем с простой страницы в вашем рабочем каталоге (<span class="blue">~/reactbook/01.01.hello.html</span>):
-						<xmp class="black">
-						<!DOCTYPE html>
-						<html>
-							<head>
-								<title>Hello React</title>
-								<meta charset="utf-8">
-							</head>
-						<body>
-							<div id="app">
-								<!-- здесь будет отображено мое приложение -->
-							</div>
-						<script src="react/build/react.js"></script>
-						<script src="react/build/react-dom.js"></script>
-						<script>
+						<pre class="black">
+					   < !DOCTYPE html >
+						< html >
+							< head >
+								< title > Hello React < /title >
+								< meta charset="utf-8" >
+							< head >
+						< body >
+							< div id="app" >
+								! -- здесь будет отображено мое приложение --
+							< div >
+						< script src="react/build/react.js"< /script >
+						< script src="react/build/react-dom.js"< /script >
+						< script >
 							// код моего приложения
-						</script>
-						</body>
-						</html>
-						</xmp>
+						< /script >
+						< /body >
+						< /html >
+						</pre>
 						</p>
 						<br>
 						<p class="black">
 							В этом файле заслуживают внимание только две особенности:<br>
-							<li class="black">включение библиотеки React и ее DOM-дополнения (с помощью тегов <span class="blue">script src</span></li>
+							<li class="black">включение библиотеки React и ее DOM-дополнения (с помощью тегов <span class="blue">script src</span>)</li>
 							<li class="black">определение места, где должно находиться ваше приложение на странице (<span class="blue">div id="app"</span>).</li>
 						</p>
 						<blockquote class="gray">С React-приложением всегда можно смешивать обычное HTML-наполнение, а также другие библиотеки JavaScript. На одной и той же странице также могут находиться сразу несколько React-приложений. Вам понадобится лишь место в объектной модели документов (DOM), на которое можно нацелить библиотеку React и сказать ей: «Твори здесь свое волшебство».</blockquote>
 						<p class="black">Теперь добавим код, который говорит <span class="blue">hello</span>. Для этого обновим содержимое файла <span class="blue">01.01.hello.html</span>, заменив строку <span class="blue">// код моего приложения</span> следующими строками:</p>
-						<xmp class="black">
+						<pre class="black">
 						ReactDOM.render(
 							React.DOM.h1(null, "Hello World!"),
 							document.getElementById("app")
 						);
-						</xmp>
+						</pre>
 						<p class="black">Загрузите <span class="blue">01.01.hello.html</span> в браузер — и увидите свое новое приложение в действии</p>
 						<p class="black">Поздравляю, вы только что создали свое первое React-приложение!</p>
 						<p class="black">В инструменте разработчика браузера Chrome: можно увидеть, что содержимое контейнера <span class="blue">div id="app"</span> заменено содержимым, созданным вашим React-приложением.</p>
