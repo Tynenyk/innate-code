@@ -101,10 +101,10 @@
 						<p class="black">Обработчиком называется то, что принимает запрос и возвращает ответ. В Go обработчики реализуют интерфейс со следующей сигнатурой:</p>
 						<pre class="black">
 							<span class="pink">type Handler interface</span> {
-						        <span class="pink">ServeHTTP</span>(<span class="gray-blue">ResponseWriter, *Request</span>)
+						        <span class="pink">ServerHTTP</span>(<span class="gray-blue">ResponseWriter, *Request</span>)
 						}
 						</pre>
-						<p class="black">Наш первый пример использует вспомогательную функцию <span class="blue">http.HandleFunc</span>, которая оборачивает другую функцию, принимающую <span class="blue">http.ResponseWriter</span> и <span class="blue">http.Request</span>, в <span class="blue">ServeHTTP.</p>
+						<p class="black">Наш первый пример использует вспомогательную функцию <span class="blue">http.HandleFunc</span>, которая оборачивает другую функцию, принимающую <span class="blue">http.ResponseWriter</span> и <span class="blue">http.Request</span>, в <span class="blue">ServerHTTP.</p>
 						<p class="black">Идея представить обработчики единым интерфейсом открывает много возможностей. Позже мы увидим, что промежуточная обработка запросов будет реализована обработчиком, чей метод <span class="blue">ServeHTTP</span> выполняет некоторый код, а после вызывает метод <span class="blue">ServeHTTP</span> другого обработчика.</p>
 						<p class="black">Таким образом, обработчики формируют ответы на запросы. Но как понять, какой именно обработчик нужно использовать в данный момент?</p>
 						<h3>Маршрутизация запросов</h3>
@@ -170,13 +170,67 @@
 						<p class="black">В основном файле установим для маршрутов префикс <span class="blue">api/v1</span>:</p>
 						<pre class="black">
 							<span class="gray-blue">// NewRouter возвращает новый HTTP-обработчик, который является точкой входа в приложение</span>
-							func NewRouter() http.Handler {
-								router := chi.NewRouter()
-							    router.Mount("/api/v1/", v1.NewRouter())
-							    return router
+							<span class="pink">func NewRouter() http.Handler</span> {
+								<span class="pink">router</span> := <span class="white-blue">chi.NewRouter()</span>
+							    <span class="pink">router.Mount</span>(<span class="gray-blue">"/api/v1/", v1.NewRouter()</span>)
+							    <span class="pink">return</span> <span class="white-blue">router</span>
 							}
-							http.Serve(autocert.NewListener("example.com"), NewRouter())
+							<span class="pink">http.Server</span>(<span class="gray-blue">autocert.NewListener("example.com"), NewRouter()</span>)
 						</pre>
+						<p class="black">Возможность организации маршрутов и применение продвинутых правил маршрутизации упрощает структуризацию и сопровождение крупных приложений.</p>
+						<h3>Реализация middleware</h3>
+						<p class="black">Промежуточная обработка (middleware) представляет собой обёртывание одного HTTP-обработчика другим. Это позволяет реализовать аутентификацию, журналирование, сжатие и другую функциональность.</p>
+						<p class="black">Данный шаблон программирования несложно понять благодаря простоте интерфейса http.Handler. Мы можем написать функцию, которая принимает один обработчик и оборачивает его в другой. Для примера рассмотрим обработчик с аутентификацией пользователей:</p>
+						<pre class="black">
+							<span class="pink">func RequireAuthentication</span>(<span class="white-blue">next http.Handler</span>) <span class="pink">http.Handler</span> {
+							    <span class="pink">return http.HandlerFunc</span>(<span class="white-blue">func(w http.ResponseWriter, r *http.Request</span>) {
+							        <span class="pink">if !isAuthenticated(r)</span> {
+							            <span class="pink">http.Redirect</span>(<span class="gray-blue">w, r, "/login", http.StatusTemporaryRedirect</span>)
+							            <span class="pink">return</span>
+							        }
+							        <span class="gray-blue">// Аутентификация прошла успешно, направляем запрос следующему обработчику</span>
+							        <span class="pink">next.ServeHTTP</span>(<span class="gray-blue">w, r</span>)
+							    })
+							}
+						</pre>
+						<p class="black">Некоторые сторонние маршрутизаторы наподобие <span class="blue">chi</span> предоставляют полезные и готовые функции для промежуточной обработки.</p>
+						<h3>Раздача статических файлов</h3>
+						<p class="black">В стандартную библиотеку Go встроены возможности для раздачи статического контента, такого как изображения, файлы JavaScript и CSS. Они доступны через функцию <span class="blue">http.FileServer</span>, которая возвращает обработчик, раздающий файлы из заданного каталога.</p>
+						<p class="black">Простой пример с уже знакомым нам маршрутизатором:</p>
+						<pre class="black">
+							<span class="pink">func NewRouter() http.Handler </span>{
+							    <span class="pink">router</span> := <span class="white-blue">chi.NewRouter()</span>
+							    <span class="pink">r.Get</span>(<span class="gray-blue">"/{name}", HelloName</span>)
+								<span class="gray-blue">// Настройка раздачи статических файлов</span>
+								<span class="pink">staticPath, _ </span>:= <span class="white-blue">filepath.Abs</span>(<span class="gray-blue">"../../static/"</span>)
+								<span class="pink">fs</span> := <span class="gray-blue">http.FileServer(http.Dir(staticPath))</span>
+							    <span class="pink">router.Handle</span>(<span class="gray-blue">"/*", fs</span>)
+							    <span class="pink">return</span> <span class="white-blue">r</span>
+						</pre>
+						<h3>Корректное завершение работы</h3>
+						<p class="black">Начиная с версии 1.8 в Go есть возможность корректно завершать работу HTTP-сервера вызовом метода <span class="blue">Shutdown()</span>. Мы запустим сервер в горутине и будем прослушивать канал для приёма сигнала прерывания (например комбинации CTRL+C). После получения сигнала выделим несколько секунд на корректное завершение работы сервера.</p>
+						<pre class="black">
+							<span class="pink">handler</span> := <span class="white-blue">server.NewRouter()</span>
+							<span class="pink">srv</span> := <span class="white-blue">&http.Server</span>{
+							    <span class="pink">Handler: handler</span>,
+							}
+							<span class="pink">go func()</span> {
+									<span class="pink">srv.Serve</span>(<span class="gray-blue">autocert.NewListener(domains...)</span>)
+							}()
+							<span class="gray-blue">// Ожидание сигнала</span>
+							<span class="pink">c</span> := <span class="white-blue">make</span>(<span class="gray-blue">chan os.Signal, 1</span>)
+							<span class="pink">signal.Notify</span>(<span class="gray-blue">c, os.Interrupt</span>)
+							<span class="gray-blue">// Попытка корректного завершения</span>
+							<span class="pink">ctx, cancel</span> := <span class="white-blue">context.WithTimeout</span>(<span class="gray-blue">context.Background(), 5*time.Second</span>)
+							<span class="pink">defer cancel</span>()
+							<span class="pink">srv.Shutdown</span>(<span class="gray-blue">ctx</span>)
+						</pre>
+						<h3>Заключение</h3>
+						<p class="black">Стандартная библиотека языка Go невероятно функциональна. В доказательство этого были рассмотрены её встроенные возможности и преимущества гибких интерфейсов для быстрой разработки надежных HTTP-серверов.</p>
+						<p class="black">В качестве продолжения рекомендуем посмотреть статью на Cloudflare, чтобы узнать о предварительных шагах перед тем, как разворачивать HTTP-сервер на Go в Интернете.</p>
+						<p class="black">Если вам интересны шаблоны, которые вы можете использовать в собственных приложениях, зайдите в проект http-boilerplate на GitHub. А чтобы увидеть описанные приемы программирования в реальных продуктах, посетите проект Gophish на GitHub.</p>
+						<a href="https://tproger.ru/translations/go-web-server/">Исходник статьи</a><br>
+						<a href="https://github.com/jordan-wright/http-boilerplate">Код на GitHub</a>
 				</article>
 			</div>
 			<div class="col-lg-4">
@@ -184,7 +238,7 @@
 				<div class="widget">
 					<h5 class="widgetheading">Категории</h5>
 					<ul class="cat">
-						<li><i class="icon-angle-right"></i><a class="black" href="#">Go Web Server</a></li>
+						<li><i class="icon-angle-right"></i><a class="black" href="../blog/go-web-server.html">Go Web Server</a></li>
 					</ul>
 				</div>
 				</aside>

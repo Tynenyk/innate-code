@@ -129,9 +129,76 @@
 						<p class="black">Можно также посмотреть на ReactDOM-объект. В нем всего лишь горстка методов, наиболее полезным из которых является <span class="blue">render()</span>. Ранее эти методы были составной частью React-объекта, но начиная с версии 0.14 они выделены в самостоятельный объект, чтобы подчеркнуть тот факт, что отображение приложения является отдельной задачей. React-приложение можно создать для отображения в различных средах, например в HTML (в DOM-модели браузера), на холсте (canvas) или прямо в Android либо iOS.</p>
 						<p class="black">Затем следует обратить внимание на концепцию компонентов. Ваш пользовательский интерфейс создается с использованием компонентов, которые сочетаются в любом (подходящем для вас) виде. В своем приложении вы, конечно же, займетесь созданием собственных привычных компонентов, но для начала React предоставляет вам надстройки над HTML DOM-элементами. Эти надстройки используются посредством React.DOM-объекта. В нашем первом примере показано использование компонента <span class="blue">h1</span>. Он соответствует HTML-элементу <span class="blue">< h1 ></span> и доступен по вызову <span class="blue">React.DOM.h1()</span>.</p>
 						<p class="black">И наконец, вы можете заметить хорошо известный DOM-доступ к контейнеру, осуществляемый с помощью метода <span class="blue">document.getElementById("app")</span>. Он используется, чтобы подсказать React, где именно на странице должно размещаться приложение. Это своеобразный мост, переброшенный между манипуляцией с известными вам DOM-объектами и React-территорией.</p>
-						<blockquote>После переброски моста от DOM к React можно больше не беспокоиться о работе с DOM, поскольку React выполняет трансформацию своих компонентов в базовую платформу (DOM-модель браузера, холст, исходное приложение). Вам не нужно заниматься DOM-моделью, но это не означает, что вы не можете этого делать. React предоставляет вам «резервные переходы», если возникнет необходимость вернуться к истокам DOM-модели.</blockquote>
+						<blockquote class="gray">После переброски моста от DOM к React можно больше не беспокоиться о работе с DOM, поскольку React выполняет трансформацию своих компонентов в базовую платформу (DOM-модель браузера, холст, исходное приложение). Вам не нужно заниматься DOM-моделью, но это не означает, что вы не можете этого делать. React предоставляет вам «резервные переходы», если возникнет необходимость вернуться к истокам DOM-модели.</blockquote>
 						<p class="black">После выяснения роли каждой строки посмотрим на всю картину в целом. Получается следующее: вы отображаете один React-компонент в выбранном вами месте DOM-модели. Всегда отображается только один компонент верхнего уровня, и он может иметь любое необходимое вам количество дочерних (а также внучатых и т. д.) компонентов. Фактически даже в этом простом примере у компонента <span class="blue">h1</span> имеется дочерний компонент — текст <span class="blue">«Hello World!»</span>.</p>
 						<h3>React.DOM.*</h3>
+						<p class="black">Как уже известно, React.DOM-объект предоставляет возможность использования нескольких элементов HTML. Изучим этот API-интерфейс.</p>
+						<blockquote class="gray">Обратите внимание на разницу между React.DOM и ReactDOM. Первое выражение относится к числу готовых к использованию HTML-элементов, а второе является способом отображения приложения в браузере (подумайте о вызове метода ReactDOM.render()).</blockquote>
+						<p class="black">Посмотрим на параметры, получаемые всеми методами React.DOM.*. Вспомним, что приложение Hello World выглядело следующим образом:</p>
+						<pre class="black">
+							<span class="pink">ReactDOM.render</span>(
+								<span class="pink">React.DOM.h1</span>(<span class="gray-blue">null, "Hello World!"</span>),
+								<span class="pink">document.getElementById</span>(<span class="gray-blue">"app"</span>
+							);
+						</pre>
+						<p class="black">Первый параметр для <span class="blue">h1()</span> (который в данном случае имеет значение <span class="blue">null</span>) является объектом, указывающим на любые свойства (подумайте об атрибутах DOM-модели), которые желательно было бы передать вашему компоненту. Например, можно сделать следующее:</p>
+						<p class="black">Второй параметр (в данном примере <span class="blue">"Hello World!"</span>) определяет дочерний элемент компонента. Как видно из предыдущего кода, в самом простом варианте это всего лишь текстовый дочерний элемент (в DOM-терминологии — text-узел). Но у вас может быть сколько угодно вложенных дочерних элементов, передаваемых в качестве дополнительных параметров функции.</p>
+						<p class="black">Например:</p>
+						<pre class="black">
+							<span class="pink">React.DOM.h1</span>(
+								{<span class="gray-blue">id: "my-heading"</span>},
+								<span class="pink">React.DOM.span</span>(<span class="gray-blue">null,</span>
+									<span class="pink">React.DOM.em</span>(<span class="gray-blue">null, "Hell"</span>),
+									<span class="gray-blue">"o"</span>
+								),
+								<span class="gray-blue">" world!"</span>
+							),
+						</pre>
+						<h3>Специальные DOM-атрибуты</h3>
+						<p class="black">Вам должны быть известны специальные DOM-атрибуты, например <span class="blue">class</span>, <span class="blue">for</span> и <span class="blue">style</span>.</p>
+						<p class="black">Вы не можете использовать <span class="blue">class</span> и <span class="blue">for</span>, поскольку в <span class="blue">JavaScript</span> они являются зарезервированными словами. Вместо них нужно выбрать названия <span class="blue">className</span> и <span class="blue">htmlFor:</span></p>
+						<pre class="black">
+							<span class="gray-blue">// Пример неработоспособного кода</span>
+							<span class="pink">React.DOM.h1</span>(
+								{
+									<span class="pink">class</span>: <span class="white-blue">"pretty",</span>
+									<span class="pink">for</span>: <span class="white-blue">"me",</span>
+								},
+							<span class="pink">"Hello World!"</span>
+							);
+							<span class="gray-blue">// Пример работоспособного кода</span>
+							<span class="pink">React.DOM.h1</span>(
+								{
+									<span class="pink">className:</span> <span class="white-blue">"pretty",</span>
+									<span class="pink">htmlFor:</span> <span class="white-blue">"me",</span>
+								},
+								<span class="gray-blue">"Hello World!"</span>
+							);
+						</pre>
+						<p class="black">Что касается атрибута <span class="blue">style</span>, то вы не можете использовать строку, как это обычно делается в <span class="blue">HTML</span>, вместо этого следует задействовать объект <span class="blue">JavaScript</span>. Отказ от использования строк всегда приветствуется (сокращается риск быть атакованным с применением межсайтовых сценариев (XSS)), поэтому такие изменения будут только поощряться.</p>
+						<pre class="black">
+							<span class="gray-blue">// Пример неработоспособного кода</span>
+							<span class="pink">React.DOM.h1</span>(
+								{
+									<span class="pink">style:</span> <span class="white-blue">"background: black; color: white; font-family:
+										Verdana"</span>,
+								},
+								<span class="gray-blue">"Hello World!"</span>
+							);
+
+							<span class="gray-blue">// Пример работоспособного кода</span>
+							<span class="pink">React.DOM.h1</span>(
+								{
+								<span class="pink">style:</span> {
+									<span class="pink">background:</span> <span class="white-blue">"black",</span>
+									<span class="pink">color:</span> <span class="white-blue">"white"</span>,
+									<span class="pink">fontFamily:</span> <span class="white-blue">"Verdana"</span>,
+									}
+								},
+								<span class="gray-blue">"Hello World!"</span>
+							);
+						</pre>
+						<p class="black">Следует также заметить, что при работе со свойствами <span class="blue">CSS</span> необходимо использовать имена API-интерфейсов <span class="blue">JavaScript</span>, например <span class="blue">fontFamily</span>, а не <span class="blue">font-family</span>.</p>
 				</article>
 			</div>
 			<div class="col-lg-4">
