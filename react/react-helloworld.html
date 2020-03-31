@@ -86,23 +86,23 @@
 						</p>
 						<p class="black">Начнем с простой страницы в вашем рабочем каталоге (<span class="blue">~/reactbook/01.01.hello.html</span>):
 						<pre class="black">
-					   < !DOCTYPE html >
-						< html >
-							< head >
-								< title > Hello React < /title >
-								< meta charset="utf-8" >
-							< head >
-						< body >
-							< div id="app" >
-								! -- здесь будет отображено мое приложение --
-							< div >
-						< script src="react/build/react.js"< /script >
-						< script src="react/build/react-dom.js"< /script >
-						< script >
-							// код моего приложения
-						< /script >
-						< /body >
-						< /html >
+					   < <span class="pink"> !DOCTYPE html</span>> >
+						< <span class="pink">html</span> >
+							< <span class="pink">head</span> >
+								< <span class="pink">title</span> > Hello React < <span class="pink">/title</span> >
+								< <span class="pink">meta charset</span> = "<span class="white-blue">utf-8</span>" >
+							< <span class="pink">head</span> >
+						< <span class="pink">body</span> >
+							< <span class="pink">div id</span> = "<span class="white-blue">app</span>" >
+								<span class="gray-blue">! -- здесь будет отображено мое приложение --</span>
+							< <span class="pink">div</span> >
+						< <span class="pink">script</span> <span class="white-blue">src</span> = "<span class="gray-blue">react/build/react.js</span>"< <span class="pink">/script</span> >
+						< <span class="pink">script</span> <span class="white-blue">src</span> = "<span class="gray-blue">react/build/react-dom.js</span>"< <span class="pink">/script</span> >
+						< <span class="pink">script</span> >
+							<span class="gray-blue">// код моего приложения</span>
+						< <span class="pink">/script</span> >
+						< <span class="pink">/body</span> >
+						< <span class="pink">/html</span> >
 						</pre>
 						</p>
 						<br>
@@ -114,14 +114,23 @@
 						<blockquote class="gray">С React-приложением всегда можно смешивать обычное HTML-наполнение, а также другие библиотеки JavaScript. На одной и той же странице также могут находиться сразу несколько React-приложений. Вам понадобится лишь место в объектной модели документов (DOM), на которое можно нацелить библиотеку React и сказать ей: «Твори здесь свое волшебство».</blockquote>
 						<p class="black">Теперь добавим код, который говорит <span class="blue">hello</span>. Для этого обновим содержимое файла <span class="blue">01.01.hello.html</span>, заменив строку <span class="blue">// код моего приложения</span> следующими строками:</p>
 						<pre class="black">
-						ReactDOM.render(
-							React.DOM.h1(null, "Hello World!"),
-							document.getElementById("app")
+						<span class="pink">ReactDOM.render</span>(
+							<span class="pink">React.DOM.h1</span>(<span class="gray-blue">null</span>, "Hello World!"),
+							<span class="white-blue">document.getElementById</span>("<span class="gray-blue">app</span>")
 						);
 						</pre>
 						<p class="black">Загрузите <span class="blue">01.01.hello.html</span> в браузер — и увидите свое новое приложение в действии</p>
 						<p class="black">Поздравляю, вы только что создали свое первое React-приложение!</p>
 						<p class="black">В инструменте разработчика браузера Chrome: можно увидеть, что содержимое контейнера <span class="blue">div id="app"</span> заменено содержимым, созданным вашим React-приложением.</p>
+						<h3>Так что же сейчаспроизошло?</h3>
+						<p class="black">В коде, заставившем работать ваше первое приложение, есть несколько любопытных мест.</p>
+						<p class="black">В первую очередь в нем видно использование React-объекта. Через него происходит обращение ко всем доступным вам API-интерфейсам. API-интерфейс намеренно сделан минимальным, чтобы не пришлось запоминать слишком много имен методов.</p>
+						<p class="black">Можно также посмотреть на ReactDOM-объект. В нем всего лишь горстка методов, наиболее полезным из которых является <span class="blue">render()</span>. Ранее эти методы были составной частью React-объекта, но начиная с версии 0.14 они выделены в самостоятельный объект, чтобы подчеркнуть тот факт, что отображение приложения является отдельной задачей. React-приложение можно создать для отображения в различных средах, например в HTML (в DOM-модели браузера), на холсте (canvas) или прямо в Android либо iOS.</p>
+						<p class="black">Затем следует обратить внимание на концепцию компонентов. Ваш пользовательский интерфейс создается с использованием компонентов, которые сочетаются в любом (подходящем для вас) виде. В своем приложении вы, конечно же, займетесь созданием собственных привычных компонентов, но для начала React предоставляет вам надстройки над HTML DOM-элементами. Эти надстройки используются посредством React.DOM-объекта. В нашем первом примере показано использование компонента <span class="blue">h1</span>. Он соответствует HTML-элементу <span class="blue">< h1 ></span> и доступен по вызову <span class="blue">React.DOM.h1()</span>.</p>
+						<p class="black">И наконец, вы можете заметить хорошо известный DOM-доступ к контейнеру, осуществляемый с помощью метода <span class="blue">document.getElementById("app")</span>. Он используется, чтобы подсказать React, где именно на странице должно размещаться приложение. Это своеобразный мост, переброшенный между манипуляцией с известными вам DOM-объектами и React-территорией.</p>
+						<blockquote>После переброски моста от DOM к React можно больше не беспокоиться о работе с DOM, поскольку React выполняет трансформацию своих компонентов в базовую платформу (DOM-модель браузера, холст, исходное приложение). Вам не нужно заниматься DOM-моделью, но это не означает, что вы не можете этого делать. React предоставляет вам «резервные переходы», если возникнет необходимость вернуться к истокам DOM-модели.</blockquote>
+						<p class="black">После выяснения роли каждой строки посмотрим на всю картину в целом. Получается следующее: вы отображаете один React-компонент в выбранном вами месте DOM-модели. Всегда отображается только один компонент верхнего уровня, и он может иметь любое необходимое вам количество дочерних (а также внучатых и т. д.) компонентов. Фактически даже в этом простом примере у компонента <span class="blue">h1</span> имеется дочерний компонент — текст <span class="blue">«Hello World!»</span>.</p>
+						<h3>React.DOM.*</h3>
 				</article>
 			</div>
 			<div class="col-lg-4">

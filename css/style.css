@@ -47,6 +47,15 @@ h1,h2, h3, h4, h5, h6 {
 	color: black;
 	font-weight: bold;
 }
+.gray-blue {
+	color: #1e347b;
+}
+.white-blue {
+	color: teal;
+}
+.pink {
+	color: #D14;
+}
 .gray {
 	color: #636363;
 }
