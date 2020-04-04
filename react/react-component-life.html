@@ -72,6 +72,45 @@
 							<h3>Жизнь компонента</h3>
 							<p class="black">После того как вы узнали о порядке использования готовых DOM-компонентов, пора приступить к изучению способов создания собственных компонентов.</p>	
 						</div>
+						<h3>Самый минимум</h3>
+						<p class="black">API-интерфейс для создания нового компонента имеет следующий вид:</p>
+						<pre class="black">
+							var MyComponent = React.createClass({
+								/* спецификации */
+							});
+						</pre>
+						<p class="black">В качестве «спецификаций» используется объект JavaScript, имеющий один обязательный метод render() и несколько необязательных методов и свойств. Самый простой пример может выглядеть следующим образом:</p>
+						<pre class="black">
+							var Component = React.createClass({
+								render: function() {
+									return React.DOM.span(null, "I'm so custom");
+								}
+							});
+						</pre>
+						<p class="black">Как видите, единственное, что нужно сделать, — это реализовать метод <span class="blue">render()</span>. Он должен возвратить React-компонент, именно поэтому вы видите в фрагменте кода компонент <span class="blue">span</span>; просто текст возвратить нельзя.</p>
+						<p class="black">Использование вашего компонента в приложении похоже на использование DOM-компонентов:</p>
+						<pre class="black">
+							ReactDOM.render(
+								React.createElement(Component),
+								document.getElementById("app")
+							);
+						</pre>
+						<p class="black">Один из способов создания экземпляра вашего компонента — применение метода <span class="blue">React.createElement()</span>. При создании сразу нескольких экземпляров применяется фабрика:</p>
+						<pre class="black">
+							var ComponentFactory = React.createFactory(Component);
+								ReactDOM.render(
+									ComponentFactory(),
+									document.getElementById("app")
+								);
+						</pre>
+						<p class="black">Учтите, что уже известные вам методы семейства React.DOM.* фактически являются всего лишь удобными оболочками вокруг <span class="blue">React.createElement()</span>. Иными словами, этот код также работает с DOM-компонентами:</p>
+						<pre class="black">
+							ReactDOM.render(
+								React.createElement("span", null, "Hello"),
+								document.getElementById("app")
+							);
+						</pre>
+						<p class="black">Как видите, DOM-элементы, в отличие от функций JavaScript, определяются в виде строк, как и в случае с пользовательскими компонентами.</p>
 					</div>
 				</article>
 			</div>

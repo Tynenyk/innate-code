@@ -88,23 +88,23 @@
 						</p>
 						<p class="black">Начнем с простой страницы в вашем рабочем каталоге (<span class="blue">~/reactbook/01.01.hello.html</span>):
 						<pre class="black">
-					   < <span class="pink"> !DOCTYPE html</span>> >
-						< <span class="pink">html</span> >
-							< <span class="pink">head</span> >
-								< <span class="pink">title</span> > Hello React < <span class="pink">/title</span> >
-								< <span class="pink">meta charset</span> = "<span class="white-blue">utf-8</span>" >
-							< <span class="pink">head</span> >
-						< <span class="pink">body</span> >
-							< <span class="pink">div id</span> = "<span class="white-blue">app</span>" >
-								<span class="gray-blue">! -- здесь будет отображено мое приложение --</span>
-							< <span class="pink">div</span> >
-						< <span class="pink">script</span> <span class="white-blue">src</span> = "<span class="gray-blue">react/build/react.js</span>"< <span class="pink">/script</span> >
-						< <span class="pink">script</span> <span class="white-blue">src</span> = "<span class="gray-blue">react/build/react-dom.js</span>"< <span class="pink">/script</span> >
-						< <span class="pink">script</span> >
-							<span class="gray-blue">// код моего приложения</span>
-						< <span class="pink">/script</span> >
-						< <span class="pink">/body</span> >
-						< <span class="pink">/html</span> >
+					    <  !DOCTYPE html> >
+						< html >
+							< head >
+								< title > Hello React < /title >
+								< meta charset = "utf-8" >
+							< head >
+						< body >
+							< div id = "app" >
+								! -- здесь будет отображено мое приложение --
+							< div >
+						< script src = "react/build/react.js"< /script >
+						< script src = "react/build/react-dom.js"< /script >
+						< script >
+							// код моего приложения
+						< /script >
+						< /body >
+						< /html >
 						</pre>
 						</p>
 						<br>
@@ -116,9 +116,9 @@
 						<blockquote class="gray">С React-приложением всегда можно смешивать обычное HTML-наполнение, а также другие библиотеки JavaScript. На одной и той же странице также могут находиться сразу несколько React-приложений. Вам понадобится лишь место в объектной модели документов (DOM), на которое можно нацелить библиотеку React и сказать ей: «Твори здесь свое волшебство».</blockquote>
 						<p class="black">Теперь добавим код, который говорит <span class="blue">hello</span>. Для этого обновим содержимое файла <span class="blue">01.01.hello.html</span>, заменив строку <span class="blue">// код моего приложения</span> следующими строками:</p>
 						<pre class="black">
-						<span class="pink">ReactDOM.render</span>(
-							<span class="pink">React.DOM.h1</span>(<span class="gray-blue">null</span>, "Hello World!"),
-							<span class="white-blue">document.getElementById</span>("<span class="gray-blue">app</span>")
+						ReactDOM.render(
+							React.DOM.h1(null, "Hello World!"),
+							document.getElementById("app")
 						);
 						</pre>
 						<p class="black">Загрузите <span class="blue">01.01.hello.html</span> в браузер — и увидите свое новое приложение в действии</p>
@@ -137,66 +137,66 @@
 						<blockquote class="gray">Обратите внимание на разницу между React.DOM и ReactDOM. Первое выражение относится к числу готовых к использованию HTML-элементов, а второе является способом отображения приложения в браузере (подумайте о вызове метода ReactDOM.render()).</blockquote>
 						<p class="black">Посмотрим на параметры, получаемые всеми методами React.DOM.*. Вспомним, что приложение Hello World выглядело следующим образом:</p>
 						<pre class="black">
-							<span class="pink">ReactDOM.render</span>(
-								<span class="pink">React.DOM.h1</span>(<span class="gray-blue">null, "Hello World!"</span>),
-								<span class="pink">document.getElementById</span>(<span class="gray-blue">"app"</span>
+							ReactDOM.render(
+								React.DOM.h1(null, "Hello World!"),
+								document.getElementById("app"
 							);
 						</pre>
 						<p class="black">Первый параметр для <span class="blue">h1()</span> (который в данном случае имеет значение <span class="blue">null</span>) является объектом, указывающим на любые свойства (подумайте об атрибутах DOM-модели), которые желательно было бы передать вашему компоненту. Например, можно сделать следующее:</p>
 						<p class="black">Второй параметр (в данном примере <span class="blue">"Hello World!"</span>) определяет дочерний элемент компонента. Как видно из предыдущего кода, в самом простом варианте это всего лишь текстовый дочерний элемент (в DOM-терминологии — text-узел). Но у вас может быть сколько угодно вложенных дочерних элементов, передаваемых в качестве дополнительных параметров функции.</p>
 						<p class="black">Например:</p>
 						<pre class="black">
-							<span class="pink">React.DOM.h1</span>(
-								{<span class="gray-blue">id: "my-heading"</span>},
-								<span class="pink">React.DOM.span</span>(<span class="gray-blue">null,</span>
-									<span class="pink">React.DOM.em</span>(<span class="gray-blue">null, "Hell"</span>),
-									<span class="gray-blue">"o"</span>
+							React.DOM.h1(
+								{id: "my-heading"},
+								React.DOM.span(null,
+									React.DOM.em(null, "Hell"),
+									"o"
 								),
-								<span class="gray-blue">" world!"</span>
+								" world!"
 							),
 						</pre>
 						<h3>Специальные DOM-атрибуты</h3>
 						<p class="black">Вам должны быть известны специальные DOM-атрибуты, например <span class="blue">class</span>, <span class="blue">for</span> и <span class="blue">style</span>.</p>
 						<p class="black">Вы не можете использовать <span class="blue">class</span> и <span class="blue">for</span>, поскольку в <span class="blue">JavaScript</span> они являются зарезервированными словами. Вместо них нужно выбрать названия <span class="blue">className</span> и <span class="blue">htmlFor:</span></p>
 						<pre class="black">
-							<span class="gray-blue">// Пример неработоспособного кода</span>
-							<span class="pink">React.DOM.h1</span>(
+							// Пример неработоспособного кода
+							React.DOM.h1(
 								{
-									<span class="pink">class</span>: <span class="white-blue">"pretty",</span>
-									<span class="pink">for</span>: <span class="white-blue">"me",</span>
+									class: "pretty",
+									for: "me",
 								},
-							<span class="pink">"Hello World!"</span>
+							"Hello World!"
 							);
-							<span class="gray-blue">// Пример работоспособного кода</span>
-							<span class="pink">React.DOM.h1</span>(
+							// Пример работоспособного кода
+							React.DOM.h1(
 								{
-									<span class="pink">className:</span> <span class="white-blue">"pretty",</span>
-									<span class="pink">htmlFor:</span> <span class="white-blue">"me",</span>
+									className: "pretty",
+									htmlFor: "me",
 								},
-								<span class="gray-blue">"Hello World!"</span>
+								"Hello World!"
 							);
 						</pre>
 						<p class="black">Что касается атрибута <span class="blue">style</span>, то вы не можете использовать строку, как это обычно делается в <span class="blue">HTML</span>, вместо этого следует задействовать объект <span class="blue">JavaScript</span>. Отказ от использования строк всегда приветствуется (сокращается риск быть атакованным с применением межсайтовых сценариев (XSS)), поэтому такие изменения будут только поощряться.</p>
 						<pre class="black">
-							<span class="gray-blue">// Пример неработоспособного кода</span>
-							<span class="pink">React.DOM.h1</span>(
+							// Пример неработоспособного кода
+							React.DOM.h1(
 								{
-									<span class="pink">style:</span> <span class="white-blue">"background: black; color: white; font-family:
-										Verdana"</span>,
+									style: "background: black; color: white; font-family:
+										Verdana",
 								},
-								<span class="gray-blue">"Hello World!"</span>
+								"Hello World!"
 							);
 
-							<span class="gray-blue">// Пример работоспособного кода</span>
-							<span class="pink">React.DOM.h1</span>(
+							// Пример работоспособного кода
+							React.DOM.h1(
 								{
-								<span class="pink">style:</span> {
-									<span class="pink">background:</span> <span class="white-blue">"black",</span>
-									<span class="pink">color:</span> <span class="white-blue">"white"</span>,
-									<span class="pink">fontFamily:</span> <span class="white-blue">"Verdana"</span>,
+								style: {
+									background: "black",
+									color: "white",
+									fontFamily: "Verdana",
 									}
 								},
-								<span class="gray-blue">"Hello World!"</span>
+								"Hello World!"
 							);
 						</pre>
 						<p class="black">Следует также заметить, что при работе со свойствами <span class="blue">CSS</span> необходимо использовать имена API-интерфейсов <span class="blue">JavaScript</span>, например <span class="blue">fontFamily</span>, а не <span class="blue">font-family</span>.</p>
