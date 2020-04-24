@@ -31,11 +31,11 @@
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
+                        <span class="icon-bar">
+                        <span class="icon-bar">
+                        <span class="icon-bar">
                     </button>
-                    <a class="navbar-brand" href="../index.html"><span>innate</span> code</a>
+                    <a class="navbar-brand" href="../index.html"><span>innate code</a>
                 </div>
                 <div class="navbar-collapse collapse ">
                     <ul class="nav navbar-nav">
@@ -81,149 +81,149 @@
 						<h3>Hello World!</h3>
 						<p class="black">HTTP-сервер на Go пишется довольно быстро. Вот пример с одним обработчиком, возвращающим «Hello World!»:</p><br>
 						<pre class="black">
-							<span class="pink">package</span> <span class="white-blue">main</span>
-							<span class="pink">import</span> (
-  								"<span class="white-blue">fmt</span>"
-							  	"<span class="white-blue">net/http</span>"
+							package
+							import (
+  								"fmt"
+							  	"net/http"
   								)
-								<span class="pink">func</span> <span class="white-blue">main</span>() {
-									<span class="pink">http.HandleFunc</span>(<span class="gray-blue">"/", func(w http.ResponseWriter, r *http.Request</span>) {
-									<span class="pink">fmt.Fprintf</span>( <span class="gray-blue">w, "Hello World!"</span> )
+								func main() {
+									http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+									fmt.Fprintf( w, "Hello World!" )
 									})
-									<span class="pink">http.ListenAndServe</span>(<span class="gray-blue">":80", nil</span>)
+									http.ListenAndServe(":80", nil)
 								}
 						</pre>
-						<p class="black">Если вы запустите приложение и откроете в браузере страницу <span class="blue">http://localhost</span>, то увидите текст <span class="blue">"Hello World"</span>.
+						<p class="black">Если вы запустите приложение и откроете в браузере страницу http://localhost, то увидите текст "Hello World".
 						В дальнейшем мы используем этот код в качестве основы, но сначала нужно понять, как он работает.</p>
 						<h3>Как работает net/http</h3>
-						<p class="black">В прошлом примере использовался пакет <span class="blue">net/http</span>, который служит в Go основным средством для разработки HTTP-клиентов и серверов. Чтобы разобраться в коде, следует кратко объяснить три важные концепции: <span class="blue">http.Handler</span>, <span class="blue">http.ServeMux</span> и <span class="blue">http.Server</span>.</p>
+						<p class="black">В прошлом примере использовался пакет net/http, который служит в Go основным средством для разработки HTTP-клиентов и серверов. Чтобы разобраться в коде, следует кратко объяснить три важные концепции: http.Handler, http.ServeMux и http.Server.</p>
 						<h3>HTTP-обработчики</h3>
 						<p class="black">Обработчиком называется то, что принимает запрос и возвращает ответ. В Go обработчики реализуют интерфейс со следующей сигнатурой:</p>
 						<pre class="black">
-							<span class="pink">type Handler interface</span> {
-						        <span class="pink">ServerHTTP</span>(<span class="gray-blue">ResponseWriter, *Request</span>)
+							type Handler interface {
+						        ServerHTTP(ResponseWriter, *Request)
 						}
 						</pre>
-						<p class="black">Наш первый пример использует вспомогательную функцию <span class="blue">http.HandleFunc</span>, которая оборачивает другую функцию, принимающую <span class="blue">http.ResponseWriter</span> и <span class="blue">http.Request</span>, в <span class="blue">ServerHTTP.</p>
-						<p class="black">Идея представить обработчики единым интерфейсом открывает много возможностей. Позже мы увидим, что промежуточная обработка запросов будет реализована обработчиком, чей метод <span class="blue">ServeHTTP</span> выполняет некоторый код, а после вызывает метод <span class="blue">ServeHTTP</span> другого обработчика.</p>
+						<p class="black">Наш первый пример использует вспомогательную функцию http.HandleFunc, которая оборачивает другую функцию, принимающую http.ResponseWriter и http.Request, в ServerHTTP.</p>
+						<p class="black">Идея представить обработчики единым интерфейсом открывает много возможностей. Позже мы увидим, что промежуточная обработка запросов будет реализована обработчиком, чей метод ServeHTTP выполняет некоторый код, а после вызывает метод ServeHTTP другого обработчика.</p>
 						<p class="black">Таким образом, обработчики формируют ответы на запросы. Но как понять, какой именно обработчик нужно использовать в данный момент?</p>
 						<h3>Маршрутизация запросов</h3>
 						<p class="black">Для выбора обработчика запроса в Go используется HTTP-мультиплексор. В некоторых библиотеках он называется «muxer» или «router», но суть та же. Мультиплексор выбирает обработчик на основе анализа пути запроса.</p>
 						<p class="black">Если вам нужна продвинутая поддержка маршрутизации, следует обратиться к сторонним библиотекам. Достойные альтернативы — gorilla/mux и go-chi/chi — позволяют простым образом реализовать промежуточную обработку, настроить wildcard-маршрутизацию и решить ряд других задач. Однако важнее то, что они совместимы со стандартными HTTP-обработчиками. Таким образом, сохранится простота кода и возможность его безболезненного изменения в будущем.</p>
 						<p class="black">Будьте внимательны при работе со сложными веб-фреймворками. Обычно они используют нестандартные решения, что усложняет интеграцию со стандартными обработчиками. Как правило, комбинации стандартной библиотеки и легковесного маршрутизатора будет достаточно для разработки большинства приложений.</p>
 						<h3>Обработка запросов</h3>
-						<p class="black">Наконец, нам необходимо что-то, способное слушать входящие соединения и перенаправлять каждый запрос соответствующему обработчику. Эту задачу можно возложить на <span class="blue">http.Server</span>.</p>
-						<p class="black">Как мы увидим далее, сервер отвечает за всё, что связано с обработкой соединений. В частности, сюда относится работа по протоколу TLS. В нашем примере при вызове <span class="blue">http.ListenAndServer</span> используется стандартный HTTP-сервер.</p>
+						<p class="black">Наконец, нам необходимо что-то, способное слушать входящие соединения и перенаправлять каждый запрос соответствующему обработчику. Эту задачу можно возложить на http.Server.</p>
+						<p class="black">Как мы увидим далее, сервер отвечает за всё, что связано с обработкой соединений. В частности, сюда относится работа по протоколу TLS. В нашем примере при вызове http.ListenAndServer используется стандартный HTTP-сервер.</p>
 						<p class="black">Теперь перейдём к более сложным примерам.</p>
 						<h3>Работа с Let’s Encrypt</h3>
 						<p class="black">Начальная версия нашего приложения работает по протоколу HTTP, но при возможности всегда рекомендуется использовать протокол HTTPS. К счастью, в Go это не проблема.</p>
 						<p class="black">Если у вас уже есть сертификат и закрытый ключ, просто используйте ListenAndServeTLS, указав корректные пути к файлам сертификата и ключа:</p>
 						<pre class="black">
-							<span class="pink">http.ListenAndServeTLS</span>(<span class="gray-blue">":443", "cert.pem", "key.pem", nil</span>)
+							http.ListenAndServeTLS(":443", "cert.pem", "key.pem", nil)
 						</pre>
 						<p class="black">Но можно сделать лучше.</p>
-						<p class="black"><span class="blue">Let’s Encrypt</span> — это удостоверяющий центр, выдающий бесплатные сертификаты с возможностью их автоматического обновления. Для использования этого сервиса в Go-приложениях доступен пакет <span class="blue">autocert</span>.</p>
-						<p class="black">Настроить <span class="blue">Let’s Encrypt</span> проще всего используя вспомогательный метод <span class="blue">autocert.NewListener</span> в связке с <span class="blue">http.Serve</span>. Вспомогательный метод получает и обновляет TLS-сертификаты, в то время как HTTP-сервер занимается обработкой запросов:</p>
+						<p class="black">Let’s Encrypt — это удостоверяющий центр, выдающий бесплатные сертификаты с возможностью их автоматического обновления. Для использования этого сервиса в Go-приложениях доступен пакет autocert.</p>
+						<p class="black">Настроить Let’s Encrypt проще всего используя вспомогательный метод autocert.NewListener в связке с http.Serve. Вспомогательный метод получает и обновляет TLS-сертификаты, в то время как HTTP-сервер занимается обработкой запросов:</p>
 						<pre class="black">
-							<span class="pink">http.Serve</span>(<span class="white-blue">autocert.NewListener</span>(<span class="gray-blue">"example.com"</span>), <span class="gray-blue">nil</span>)
+							http.Serve(autocert.NewListener("example.com"), nil)
 						</pre>
-						<p class="black">Если требуется более тонкая настройка, используйте менеджер <span class="blue">autocert.Manager</span>. Затем создайте сервер <span class="blue">http.Server</span> (до сих пор мы использовали реализацию по умолчанию) и добавьте менеджер в конфигурацию сервера <span class="blue">TLSConfig</span>:</p>
+						<p class="black">Если требуется более тонкая настройка, используйте менеджер autocert.Manager. Затем создайте сервер http.Server (до сих пор мы использовали реализацию по умолчанию) и добавьте менеджер в конфигурацию сервера TLSConfig:</p>
 						<pre class="black">
-							<span class="pink">m</span> := <span class="white-blue">&autocert.Manager</span>{
-							<span class="pink">Cache</span>:      <span class="white-blue">autocert.DirCache</span>(<span class="gray-blue">"golang-autocert"</span>),
-							<span class="pink">Prompt</span>:     <span class="white-blue">autocert.AcceptTOS</span>,
-							<span class="pink">HostPolicy</span>: <span class="white-blue">autocert.HostWhitelist</span>(<span class="gray-blue">"example.org", "www.example.org"</span>),
+							m := &autocert.Manager {
+							Cache: autocert.DirCache"golang-autocert"),
+							Prompt:     autocert.AcceptTOS,
+							HostPolicy: autocert.HostWhitelist("example.org", "www.example.org"),
 							}
-							<span class="pink">server</span> := <span class="white-blue">&http.Server</span>{
-							    <span class="pink">Addr:</span>      ":<span class="white-blue">443</span>",
-							    <span class="pink">TLSConfig</span>: <span class="white-blue">m.TLSConfig()</span>,
+							server := &http.Server{
+							    Addr:      ":443",
+							    TLSConfig: m.TLSConfig(),
 							}
-							<span class="pink">server.ListenAndServeTLS</span>(<span class="gray-blue">"", ""</span>)
+							server.ListenAndServeTLS("", "")
 						</pre>
 						<p class="black">Таким простым способом можно реализовать полную поддержку HTTPS с автоматическим обновлением сертификата.</p>
 						<h3>Установка маршрутов</h3>
 						<p class="black">Маршрутизатор из стандартной библиотеки неплох, но недостаточно функционален. Как правило, в приложениях требуется более сложная логика маршрутизации. Например, настройка вложенных и wildcard-маршрутов или установка шаблонов и параметров путей.</p>
-						<p class="black">В этом случае могут быть полезны пакеты <span class="blue">gorilla/mux</span> и <span class="blue">go-chi/chi</span>. Ниже описан пример настройки маршрутизации с помощью библиотеки <span class="blue">chi</span>.</p>
-						<p class="black">Допустим, у нас есть файл <span class="blue">api/v1/api.go</span>, содержащий маршруты для нашего API:</p>
+						<p class="black">В этом случае могут быть полезны пакеты gorilla/mux и go-chi/chi. Ниже описан пример настройки маршрутизации с помощью библиотеки chi.</p>
+						<p class="black">Допустим, у нас есть файл api/v1/api.go, содержащий маршруты для нашего API:</p>
 						<pre class="black">
-							<span class="gray-blue">// HelloResponse — это JSON-представление сообщения</span>
-							<span class="pink">type HelloResponse struct</span> {
-								<span class="pink">Message string</span> `<span class="white-blue">json:"message"</span>`
+							// HelloResponse — это JSON-представление сообщения
+							type HelloResponse struct {
+								Message string `json:"message"`
 							}
 
-							<span class="gray-blue">// HelloName возвращает персонализированное JSON-сообщение</span>
-							<span class="pink">func HelloName</span>(<span class="gray-blue">w http.ResponseWriter, r *http.Request</span>) {
-								<span class="pink">name</span> := <span class="white-blue">chi.URLParam</span>(<span class="gray-blue">r, "name"</span>)
-								<span class="pink">response</span> := <span class="white-blue">HelloResponse</span>{
-									<span class="pink">Message</span>: <span class="white-blue">fmt.Sprintf</span>(<span class="gray-blue">"Hello %s!", name</span>),
+							// HelloName возвращает персонализированное JSON-сообщение
+							func HelloName(w http.ResponseWriter, r *http.Request) {
+								name := chi.URLParam(r, "name")
+								response := HelloResponse {
+									Message: fmt.Sprintf("Hello %s!", name),
 								}
-								<span class="pink">jsonResponse</span>(<span class="gray-blue">w, response, http.StatusOK</span>)
+								jsonResponse(w, response, http.StatusOK)
 							}
 
-							<span class="gray-blue">// NewRouter возвращает HTTP-обработчик, который является точкой входа в API</span>
-							<span class="pink">func NewRouter()</span> <span class="white-blue">http.Handler</span> {
-								<span class="white-blue">r</span> := <span class="gray-blue">chi.NewRouter()</span>
-								<span class="pink">r.Get</span>(<span class="gray-blue">"/{name}", HelloName</span>)
-								<span class="pink">return</span> <span class="white-blue">r</span>
+							// NewRouter возвращает HTTP-обработчик, который является точкой входа в API
+							func NewRouter() http.Handler {
+								r := chi.NewRouter()
+								r.Get("/{name}", HelloName)
+								return r
 							}
 						</pre>
-						<p class="black">В основном файле установим для маршрутов префикс <span class="blue">api/v1</span>:</p>
+						<p class="black">В основном файле установим для маршрутов префикс api/v1:</p>
 						<pre class="black">
-							<span class="gray-blue">// NewRouter возвращает новый HTTP-обработчик, который является точкой входа в приложение</span>
-							<span class="pink">func NewRouter() http.Handler</span> {
-								<span class="pink">router</span> := <span class="white-blue">chi.NewRouter()</span>
-							    <span class="pink">router.Mount</span>(<span class="gray-blue">"/api/v1/", v1.NewRouter()</span>)
-							    <span class="pink">return</span> <span class="white-blue">router</span>
+							// NewRouter возвращает новый HTTP-обработчик, который является точкой входа в приложение
+							func NewRouter() http.Handler {
+								router := chi.NewRouter()
+							    router.Mount("/api/v1/", v1.NewRouter())
+							    return router
 							}
-							<span class="pink">http.Server</span>(<span class="gray-blue">autocert.NewListener("example.com"), NewRouter()</span>)
+							http.Server(autocert.NewListener("example.com"), NewRouter())
 						</pre>
 						<p class="black">Возможность организации маршрутов и применение продвинутых правил маршрутизации упрощает структуризацию и сопровождение крупных приложений.</p>
 						<h3>Реализация middleware</h3>
 						<p class="black">Промежуточная обработка (middleware) представляет собой обёртывание одного HTTP-обработчика другим. Это позволяет реализовать аутентификацию, журналирование, сжатие и другую функциональность.</p>
 						<p class="black">Данный шаблон программирования несложно понять благодаря простоте интерфейса http.Handler. Мы можем написать функцию, которая принимает один обработчик и оборачивает его в другой. Для примера рассмотрим обработчик с аутентификацией пользователей:</p>
 						<pre class="black">
-							<span class="pink">func RequireAuthentication</span>(<span class="white-blue">next http.Handler</span>) <span class="pink">http.Handler</span> {
-							    <span class="pink">return http.HandlerFunc</span>(<span class="white-blue">func(w http.ResponseWriter, r *http.Request</span>) {
-							        <span class="pink">if !isAuthenticated(r)</span> {
-							            <span class="pink">http.Redirect</span>(<span class="gray-blue">w, r, "/login", http.StatusTemporaryRedirect</span>)
-							            <span class="pink">return</span>
+							func RequireAuthentication(next http.Handler) http.Handler {
+							    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+							        if !isAuthenticated(r) {
+							            http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+							            return
 							        }
-							        <span class="gray-blue">// Аутентификация прошла успешно, направляем запрос следующему обработчику</span>
-							        <span class="pink">next.ServeHTTP</span>(<span class="gray-blue">w, r</span>)
+							        // Аутентификация прошла успешно, направляем запрос следующему обработчику
+							        next.ServeHTTP(w, r)
 							    })
 							}
 						</pre>
-						<p class="black">Некоторые сторонние маршрутизаторы наподобие <span class="blue">chi</span> предоставляют полезные и готовые функции для промежуточной обработки.</p>
+						<p class="black">Некоторые сторонние маршрутизаторы наподобие chi предоставляют полезные и готовые функции для промежуточной обработки.</p>
 						<h3>Раздача статических файлов</h3>
-						<p class="black">В стандартную библиотеку Go встроены возможности для раздачи статического контента, такого как изображения, файлы JavaScript и CSS. Они доступны через функцию <span class="blue">http.FileServer</span>, которая возвращает обработчик, раздающий файлы из заданного каталога.</p>
+						<p class="black">В стандартную библиотеку Go встроены возможности для раздачи статического контента, такого как изображения, файлы JavaScript и CSS. Они доступны через функцию http.FileServer, которая возвращает обработчик, раздающий файлы из заданного каталога.</p>
 						<p class="black">Простой пример с уже знакомым нам маршрутизатором:</p>
 						<pre class="black">
-							<span class="pink">func NewRouter() http.Handler </span>{
-							    <span class="pink">router</span> := <span class="white-blue">chi.NewRouter()</span>
-							    <span class="pink">r.Get</span>(<span class="gray-blue">"/{name}", HelloName</span>)
-								<span class="gray-blue">// Настройка раздачи статических файлов</span>
-								<span class="pink">staticPath, _ </span>:= <span class="white-blue">filepath.Abs</span>(<span class="gray-blue">"../../static/"</span>)
-								<span class="pink">fs</span> := <span class="gray-blue">http.FileServer(http.Dir(staticPath))</span>
-							    <span class="pink">router.Handle</span>(<span class="gray-blue">"/*", fs</span>)
-							    <span class="pink">return</span> <span class="white-blue">r</span>
+							func NewRouter() http.Handler {
+							    router := chi.NewRouter()
+							    r.Get("/{name}", HelloName)
+								// Настройка раздачи статических файлов
+								staticPath, _ := filepath.Abs("../../static/")
+								fs := http.FileServer(http.Dir(staticPath))
+							    router.Handle("/*", fs)
+							    return r
 						</pre>
 						<h3>Корректное завершение работы</h3>
-						<p class="black">Начиная с версии 1.8 в Go есть возможность корректно завершать работу HTTP-сервера вызовом метода <span class="blue">Shutdown()</span>. Мы запустим сервер в горутине и будем прослушивать канал для приёма сигнала прерывания (например комбинации CTRL+C). После получения сигнала выделим несколько секунд на корректное завершение работы сервера.</p>
+						<p class="black">Начиная с версии 1.8 в Go есть возможность корректно завершать работу HTTP-сервера вызовом метода Shutdown(). Мы запустим сервер в горутине и будем прослушивать канал для приёма сигнала прерывания (например комбинации CTRL+C). После получения сигнала выделим несколько секунд на корректное завершение работы сервера.</p>
 						<pre class="black">
-							<span class="pink">handler</span> := <span class="white-blue">server.NewRouter()</span>
-							<span class="pink">srv</span> := <span class="white-blue">&http.Server</span>{
-							    <span class="pink">Handler: handler</span>,
+							handler := server.NewRouter()
+							srv := &http.Server{
+							    Handler: handler,
 							}
-							<span class="pink">go func()</span> {
-									<span class="pink">srv.Serve</span>(<span class="gray-blue">autocert.NewListener(domains...)</span>)
+							go func() {
+									srv.Serve(autocert.NewListener(domains...))
 							}()
-							<span class="gray-blue">// Ожидание сигнала</span>
-							<span class="pink">c</span> := <span class="white-blue">make</span>(<span class="gray-blue">chan os.Signal, 1</span>)
-							<span class="pink">signal.Notify</span>(<span class="gray-blue">c, os.Interrupt</span>)
-							<span class="gray-blue">// Попытка корректного завершения</span>
-							<span class="pink">ctx, cancel</span> := <span class="white-blue">context.WithTimeout</span>(<span class="gray-blue">context.Background(), 5*time.Second</span>)
-							<span class="pink">defer cancel</span>()
-							<span class="pink">srv.Shutdown</span>(<span class="gray-blue">ctx</span>)
+							// Ожидание сигнала
+							c := make(chan os.Signal, 1)
+							signal.Notify(c, os.Interrupt)
+							// Попытка корректного завершения
+							ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+							defer cancel()
+							srv.Shutdown(ctx)
 						</pre>
 						<h3>Заключение</h3>
 						<p class="black">Стандартная библиотека языка Go невероятно функциональна. В доказательство этого были рассмотрены её встроенные возможности и преимущества гибких интерфейсов для быстрой разработки надежных HTTP-серверов.</p>
@@ -254,16 +254,13 @@
 					<div class="copyright">
 						<p>
 							den.tynenyk@gmail.com<br>
-							<span>&copy; 2020 Все права защищены. На основе шаблона Moderna от </span><a href="http://bootstraptaste.com" target="_blank">Bootstraptaste</a>
+							<span>&copy; 2020 Все права защищены. На основе шаблона Moderna от <a href="http://bootstraptaste.com" target="_blank">Bootstraptaste</a>
 						</p>
 					</div>
 				</div>
 				<div class="col-lg-6">
 					<ul class="social-network">
 						<li><a href="https://github.com/tynenyk" data-placement="top" title="GitHub"><i class="fa fa-github"></i></a></li>
-						<li><a href="https://twitter.com/denis_tynenyk" data-placement="top" title="Twitter"><i class="fa fa-twitter"></i></a></li>
-						<li><a href="https://www.youtube.com/channel/UCmhH6qERZwGKA2uMcZUME-w?view_as=subscriber" data-placement="top" title="YouTube"><i class="fa fa-youtube"></i></a></li>
-						<li><a href="https://www.flickr.com/photos/187616165@N02/" data-placement="top" title="Flickr"><i class="fa fa-flickr"></i></a></li>
 					</ul>
 				</div>
 			</div>
